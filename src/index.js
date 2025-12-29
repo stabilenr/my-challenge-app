@@ -1,4 +1,40 @@
+let apiKey = "109f833e331a8e73of380d4a6cb25ft3";
+
+function searchCity(city) {
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&units=metric&key=${apiKey}`;
+
+  axios.get(apiUrl).then(displayWeather);
+}
+
+function displayWeather(response) {
+  document.querySelector("#current-city").innerHTML = response.data.city;
+  document.querySelector(".current-temperature-value").innerHTML = Math.round(
+    response.data.temperature.current
+  );
+}
+
+function search(event) {
+  event.preventDefault();
+  let city = document.querySelector("#search-input").value;
+  searchCity(city);
+}
+
+let searchForm = document.querySelector("#search-form");
+searchForm.addEventListener("submit", search);
+
 function formatDate(date) {
+  let minutes = date.getMinutes();
+  let hours = date.getHours();
+  let day = date.getDay();
+
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+
+  if (hours < 10) {
+    hours = `0${hours}`;
+  }
+
   let days = [
     "Sunday",
     "Monday",
@@ -9,42 +45,7 @@ function formatDate(date) {
     "Saturday",
   ];
 
-  let day = days[date.getDay()];
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-
-  if (hours < 10) {
-    hours = `0${hours}`;
-  }
-
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-
-  return `${day} ${hours}:${minutes}`;
+  return `${days[day]} ${hours}:${minutes}`;
 }
 
-function displayCurrentDate() {
-  let dateElement = document.querySelector("#current-date");
-  if (dateElement) {
-    dateElement.textContent = formatDate(new Date());
-  }
-}
-
-function handleSearchSubmit(event) {
-  event.preventDefault();
-
-  let searchInput = document.querySelector("#search-input");
-  let cityElement = document.querySelector(".current-city");
-
-  if (searchInput && cityElement) {
-    cityElement.textContent = searchInput.value.trim();
-  }
-}
-
-displayCurrentDate();
-
-let searchForm = document.querySelector("#search-form");
-if (searchForm) {
-  searchForm.addEventListener("submit", handleSearchSubmit);
-}
+document.querySelector("#current-date").innerHTML = formatDate(new Date());
